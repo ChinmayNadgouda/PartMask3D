@@ -1,0 +1,251 @@
+Mask 3D
+
+Changed the LRSTepOptimeriser in some file, https://github.com/clovaai/donut/issues/255
+
+
+CMD history
+
+  892  git clone https://github.com/JonasSchult/Mask3D.git
+  893  cd Mask3D/
+  894  ls
+  895  cd third_party/
+  896  git clone --recursive "https://github.com/NVIDIA/MinkowskiEngine"
+  897  cd MinkowskiEngine/
+  898  git checkout 02fc608bea4c0549b0a7b00ca1bf15dee4a0b228
+  899  python setup.py install --force_cuda --blas=openblas
+  900  conda activate thesis
+  901  python setup.py install --force_cuda --blas=openblas
+  902  ninja --version
+  903  pip install -U "git+https://github.com/NVIDIA/MinkowskiEngine.git@v0.5.4#egg=MinkowskiEngine&subdirectory=src" --install-option="--blas=openblas" --install-option="--cuda"
+  904  python -c "import torch; print(torch.version.cuda)"
+  905  nvcc --version
+  906  nvidia-smi
+  907  ls /usr/local/
+  908  cd lib
+  909  ls
+  910  cd /usr/local/
+  911  ls
+  912  cd lib/
+  913  ls
+  914  cd ..
+  915  cd bin/
+  916  ls
+  917  cd 
+  918  cd /usr/local/include/
+  919  ls
+  920  cd /usr/
+  921  ls
+  922  cd lib
+  923  ls
+  924  cd cuda
+  925  ls
+  926  cd 
+  927  python -c "import torch; print(torch.version.cuda)"
+  928  python setup.py install --blas=openblas --cuda -j 4
+  929  cd Mask3D/third_party/MinkowskiEngine/
+  930  python setup.py install --blas=openblas --cuda -j 4
+  931  python setup.py install --force_cuda --blas=openblas -j 4
+  932  pip install -U "git+https://github.com/NVIDIA/MinkowskiEngine.git@v0.5.4#egg=MinkowskiEngine&subdirectory=src" --install-option="--blas=openblas" --install-option="--cuda"
+  933  CMAKE_ARGS="-Dblas=openblas"  pip install -U "git+https://github.com/NVIDIA/MinkowskiEngine.git@v0.5.4#egg=MinkowskiEngine&subdirectory=src" 
+  934  ls
+  935  cd MinkowskiEngine
+  936  ls
+  937  cd ..
+  938  ls
+  939  CMAKE_ARGS="-Dblas=openblas"  pip install -U "git+https://github.com/NVIDIA/MinkowskiEngine.git@v0.5.4#egg=MinkowskiEngine&subdirectory=src" 
+  940  CMAKE_ARGS="-Dblas=openblas" pip3 install -U MinkowskiEngine -v --no-deps
+  941  export TORCH_CUDA_ARCH_LIST="6.0 6.1 6.2 7.0 7.2 7.5 8.0 8.6"
+  942  CMAKE_ARGS="-Dblas=openblas" pip3 install -U MinkowskiEngine -v --no-deps
+  943  cd MinkowskiEngine/
+  944  ls
+  945  python setup.py install --force_cuda --blas=openblas
+  946  python setup.py install --force_cuda --blas=openblas
+  947  python setup.py clean
+  948  export CXXFLAGS="-Wno-deprecated -Wno-sign-compare -Wno-unused-variable"
+  949  export NVCC_FLAGS="--disable-warnings -diag-suppress=20014 -diag-suppress=20011"
+  950  python setup.py install --force_cuda --blas=openblas
+  951  apt install liblapack-dev liblapack3 libopenblas-base libopenblas-dev
+  952  sudo apt install liblapack-dev liblapack3 libopenblas-base libopenblas-dev
+  953  apt install liblapack-dev liblapack3  libopenblas-dev
+  954  sudo apt install liblapack-dev liblapack3  libopenblas-dev
+  955  python setup.py install --force_cuda --blas=openblas
+  956  nvidia-smi
+  957  conda activate thesis
+  958  pip list | grep torch
+  959  export TORCH_CUDA_ARCH_LIST="6.0 6.1 6.2 7.0 7.2 7.5 8.0 8.6"
+  960  pip3 install torch-scatter 
+  961  gcc --version
+  962  sudo apt install build-essential
+  963  pip3 install torch-scatter 
+  964  sudo apt install g++-10
+  965  pip3 install torch-scatter 
+  966  pip3 install 'git+https://github.com/facebookresearch/detectron2.git@710e7795d0eeadf9def0e7ef957eea13532e34cf' --no-deps
+  967  conda activate thesis
+  968  python3 open_npy.py 
+  969  conda activate thesis
+  970  python main_instance_segmentation.py 
+  971  set CUDA_LAUNCH_BLOCKING = 1
+  972  SET TORCH_USE_CUDA_DSA = 1
+  973  set TORCH_USE_CUDA_DSA = 1
+  974  python main_instance_segmentation.py 
+  975  export OMP_NUM_THREADS=3  # speeds up MinkowskiEngine
+  976  CURR_DBSCAN=0.95
+  977  CURR_TOPK=300
+  978  CURR_QUERY=150
+  979  CURR_T=0.001
+  980  python main_instance_segmentation.py general.experiment_name="scannet200_benchmark_query_${CURR_QUERY}_topk_${CURR_TOPK}_dbscan_${CURR_DBSCAN}_export_${CURR_T}" general.project_name="scannet200_eval" general.checkpoint="checkpoints/scannet200/scannet200_benchmark.ckpt" data/datasets=scannet200 general.num_targets=201 data.num_labels=200 general.eval_on_segments=true general.train_on_segments=true general.train_mode=false model.num_queries=${CURR_QUERY} general.topk_per_image=${CURR_TOPK} general.use_dbscan=true general.dbscan_eps=${CURR_DBSCAN} general.export=true data.test_mode=test general.export_threshold=${CURR_T}
+  981  python main_instance_segmentation.py general.experiment_name="benchmark_query_${CURR_QUERY}_topk_${CURR_TOPK}_dbscan_${CURR_DBSCAN}" general.project_name="scannet_eval" general.checkpoint='checkpoints/scannet/scannet_benchmark.ckpt' general.eval_on_segments=true general.train_on_segments=true general.train_mode=false general.export=true data.test_mode=test model.num_queries=${CURR_QUERY} general.topk_per_image=${CURR_TOPK} general.use_dbscan=true general.dbscan_eps=${CURR_DBSCAN}
+  982  wandb logout
+  983  wandb --help
+  984  wandb disabled
+  985  wandb enabled
+  986  python main_instance_segmentation.py general.experiment_name="benchmark_query_${CURR_QUERY}_topk_${CURR_TOPK}_dbscan_${CURR_DBSCAN}" general.project_name="scannet_eval" general.checkpoint='checkpoints/scannet/scannet_benchmark.ckpt' general.eval_on_segments=true general.train_on_segments=true general.train_mode=false general.export=true data.test_mode=test model.num_queries=${CURR_QUERY} general.topk_per_image=${CURR_TOPK} general.use_dbscan=true general.dbscan_eps=${CURR_DBSCAN}
+  987  echo $WANDB_API_KEY
+  988  rm -rf ~/.config/wandb
+  989  python main_instance_segmentation.py general.experiment_name="benchmark_query_${CURR_QUERY}_topk_${CURR_TOPK}_dbscan_${CURR_DBSCAN}" general.project_name="scannet_eval" general.checkpoint='checkpoints/scannet/scannet_benchmark.ckpt' general.eval_on_segments=true general.train_on_segments=true general.train_mode=false general.export=true data.test_mode=test model.num_queries=${CURR_QUERY} general.topk_per_image=${CURR_TOPK} general.use_dbscan=true general.dbscan_eps=${CURR_DBSCAN}
+  990  wandb status
+  991  python main_instance_segmentation.py general.experiment_name="benchmark_query_${CURR_QUERY}_topk_${CURR_TOPK}_dbscan_${CURR_DBSCAN}" general.project_name="scannet_eval" general.checkpoint='checkpoints/scannet/scannet_benchmark.ckpt' general.eval_on_segments=true general.train_on_segments=true general.train_mode=false general.export=true data.test_mode=test model.num_queries=${CURR_QUERY} general.topk_per_image=${CURR_TOPK} general.use_dbscan=true general.dbscan_eps=${CURR_DBSCAN}
+  992  wandb login --relogin
+  993  python main_instance_segmentation.py general.experiment_name="benchmark_query_${CURR_QUERY}_topk_${CURR_TOPK}_dbscan_${CURR_DBSCAN}" general.project_name="scannet_eval" general.checkpoint='checkpoints/scannet/scannet_benchmark.ckpt' general.eval_on_segments=true general.train_on_segments=true general.train_mode=false general.export=true data.test_mode=test model.num_queries=${CURR_QUERY} general.topk_per_image=${CURR_TOPK} general.use_dbscan=true general.dbscan_eps=${CURR_DBSCAN}
+  994  wandb login --relogin
+  995  python main_instance_segmentation.py general.experiment_name="benchmark_query_${CURR_QUERY}_topk_${CURR_TOPK}_dbscan_${CURR_DBSCAN}" general.project_name="scannet_eval" general.checkpoint='checkpoints/scannet/scannet_benchmark.ckpt' general.eval_on_segments=true general.train_on_segments=true general.train_mode=false general.export=true data.test_mode=test model.num_queries=${CURR_QUERY} general.topk_per_image=${CURR_TOPK} general.use_dbscan=true general.dbscan_eps=${CURR_DBSCAN}
+  996  export WANDB_API_KEY="7b0a428ea724f5a389903944235443d20e03541d"
+  997  python main_instance_segmentation.py general.experiment_name="benchmark_query_${CURR_QUERY}_topk_${CURR_TOPK}_dbscan_${CURR_DBSCAN}" general.project_name="scannet_eval" general.checkpoint='checkpoints/scannet/scannet_benchmark.ckpt' general.eval_on_segments=true general.train_on_segments=true general.train_mode=false general.export=true data.test_mode=test model.num_queries=${CURR_QUERY} general.topk_per_image=${CURR_TOPK} general.use_dbscan=true general.dbscan_eps=${CURR_DBSCAN}
+  998  sftp student@129.69.223.230
+  999  conda activate thesis
+ 1000  python -V
+ 1001  conda install python=3.10.9
+ 1002  python -V
+ 1003  pip install volumentations==0.1.8
+ 1004  pip install volumentations
+ 1005  pip install pyyaml==5.3.1
+ 1006  pip install volumentations
+ 1007  cd Mask3D/
+ 1008  ls
+ 1009  python -Vpython main_instance_segmentation.py general.experiment_name="benchmark" general.eval_on_segments=true general.train_on_segments=true data.train_mode=train_validation
+ 1010  python main_instance_segmentation.py general.experiment_name="benchmark" general.eval_on_segments=true general.train_on_segments=true data.train_mode=train_validation
+ 1011  python main_instance_segmentation.py general.experiment_name="validation" general.eval_on_segments=true general.train_on_segments=true
+ 1012  python main_instance_segmentation.py general.experiment_name="benchmark" general.eval_on_segments=true general.train_on_segments=true data.train_mode=train_validation
+ 1013  nvidia-smi
+ 1014  conda activate thesis
+ 1015  ls
+ 1016  cd Mask3D/
+ 1017  ls
+ 1018  cd third_party/
+ 1019  l
+ 1020  ls
+ 1021  cd pointnet2/
+ 1022  ls
+ 1023  python setup.py install
+ 1024  cd ../../
+ 1025  ls
+ 1026  pip3 install pytorch-lightning==1.7.2
+ 1027  cd third_party/
+ 1028  ls
+ 1029  git clone https://github.com/ScanNet/ScanNet.git
+ 1030  cd ScanNet/Segmentator/
+ 1031  ls
+ 1032  git checkout 3e5726500896748521a6ceb81271b0f5b2c0e7d2
+ 1033  make
+ 1034  cd ../../../
+ 1035  ;s
+ 1036  ls
+ 1037  python main_instance_segmentation.py 
+ 1038  pip install dotenv
+ 1039  pip install python-dotenv
+ 1040  python main_instance_segmentation.py 
+ 1041  pip install pyviz3d
+ 1042  python main_instance_segmentation.py 
+ 1043  pip install plyfile
+ 1044  python main_instance_segmentation.py 
+ 1045  pip install trimesh
+ 1046  python main_instance_segmentation.py 
+ 1047  pip show torchmetrics pytorch-lightning torch
+ 1048  pip uninstall torchmetrics
+ 1049  pip install torchmetrics==0.11.4
+ 1050  python main_instance_segmentation.py 
+ 1051  pip install loguru
+ 1052  python main_instance_segmentation.py 
+ 1053  python main_instance_segmentation.py general.experiment_name="benchmark" general.eval_on_segments=true general.train_on_segments=true data.train_mode=train_validation
+ 1054  pip uninstall hydra-core
+ 1055  pip install hydra-core==1.0.5
+ 1056  python main_instance_segmentation.py general.experiment_name="benchmark" general.eval_on_segments=true general.train_on_segments=true data.train_mode=train_validation
+ 1057  pip install fvcore
+ 1058  python main_instance_segmentation.py general.experiment_name="benchmark" general.eval_on_segments=true general.train_on_segments=true data.train_mode=train_validation
+ 1059  pip show pillow
+ 1060  pip uninstall pillow
+ 1061  pip install  pillow==9.5.0
+ 1062  python main_instance_segmentation.py general.experiment_name="benchmark" general.eval_on_segments=true general.train_on_segments=true data.train_mode=train_validation
+ 1063  pip install albumentations==1.2.1
+ 1064  python main_instance_segmentation.py general.experiment_name="benchmark" general.eval_on_segments=true general.train_on_segments=true data.train_mode=train_validation
+ 1065  grep -A 1000 "^  - pip:" environment.yml | tail -n +2
+ 1066  grep -A 1000 "^  - pip:" environment.yml | tail -n +2 | xargs pip install
+ 1067  pip install -r requirements.txt 
+ 1068  python main_instance_segmentation.py general.experiment_name="benchmark" general.eval_on_segments=true general.train_on_segments=true data.train_mode=train_validation
+ 1069  pip install volumentations==0.1.8
+ 1070  pip install pyyaml
+ 1071  pip install volumentations==0.1.8
+ 1072  pip install volumentations
+ 1073  pip uninstall pyyaml
+ 1074  pip install pyyaml
+ 1075  pip install volumentations
+ 1076  conda install volumentations
+ 1077  pip install volumentations
+ 1078  sudo apt install build-essential python3-dev
+ 1079  pip install volumentations
+ 1080  ls
+ 1081  export TORCH_CUDA_ARCH_LIST="6.0 6.1 6.2 7.0 7.2 7.5 8.0 8.6"
+ 1082  conda env create -f environment.yml
+ 1083  conda env update -f environment.yml --prune
+ 1084  conda install -c conda-forge pyyaml=5.4.1
+ 1085  conda activate mask3d_cuda113
+ 1086  conda install -c conda-forge pyyaml=5.4.1
+ 1087  conda env update -f environment.yml --prune
+ 1088  pip install omegaconf==2.1.0.dev1,
+ 1089  pip install omegaconf
+ 1090  conda env update -f environment.yml --prune
+ 1091  pip show omegaconf
+ 1092  pip uninstall omegaconf
+ 1093  pip install omegaconf==2.0.5
+ 1094  pip install omegaconf==2.1.0
+ 1095  pip install pip==23.2.1
+ 1096  pip install omegaconf==2.1.0
+ 1097  conda env update -f environment.yml --prune
+ 1098  pip install pyyaml==5.3.1
+ 1099  conda env update -f environment.yml --prune
+ 1100  pip install --upgrade setuptools pip wheel
+ 1101  conda env update -f environment.yml --prune
+ 1102  cat environment.yml 
+ 1103  pip uninstall omegaconf==2.1.0
+ 1104  pip uninstall omegaconf==2.0.5
+ 1105  pip install omegaconf==2.0.5
+ 1106  pip install pip==23.2.1
+ 1107  pip install omegaconf==2.0.5
+ 1108  conda env update -f environment.yml --prune
+ 1109  pip install --upgrade setuptools pip wheel
+ 1110  conda env update -f environment.yml --prune
+ 1111  pip install cython
+ 1112  conda env update -f environment.yml --prune
+ 1113  conda activate thesis
+ 1114  python main_instance_segmentation.py general.experiment_name="benchmark" general.eval_on_segments=true general.train_on_segments=true data.train_mode=train_validation
+ 1115  conda activate mask3d-cu11
+ 1116  conda activate mask3d_cuda113
+ 1117  python main_instance_segmentation.py general.experiment_name="benchmark" general.eval_on_segments=true general.train_on_segments=true data.train_mode=train_validation
+ 1118  pip install volumentations
+ 1119  python version
+ 1120  python -V
+ 1121  pip install volumentations
+ 1122  sudo code --no-sandbox --user-data-dir /home/gokul/
+ 1123  sudo code --no-sandbox --user-data-dir /home/gokul/Mask3D
+ 1124  cd /home/gokul/anaconda3/envs/thesis/lib/python3.10/site-packages/pytorch_lightning/
+ 1125  ls
+ 1126  vim utilities/types.py 
+ 1127  cat /root/.netrc
+ 1128  sudo cat /root/.netrc
+ 1129  sudo cat .netrc
+ 1130  vim .netrc
+ 1131  cd Mask3D/saved/benchmark_query_150_topk_500_dbscan_0.95/visualizations/scene0423_00/
+ 1132  ls
+ 1133  conda activate thesis
+ 1134  python -m http.server 6008
+
