@@ -1,5 +1,6 @@
 import os
 import pyviz3d.visualizer as vis
+from pprint import pprint
 
 from sklearn.cluster import DBSCAN
 import logging
@@ -19,7 +20,7 @@ from trainer.trainer import InstanceSegmentation
 from utils.utils import load_checkpoint_with_missing_or_exsessive_keys
 
 SCANNET_COLOR_MAP_200 = {
-    0: (0.0, 0.0, 0.0),
+      0: (0.0, 0.0, 0.0),
     1: (174.0, 199.0, 232.0),
     2: (188.0, 189.0, 34.0),
     3: (152.0, 223.0, 138.0),
@@ -117,14 +118,14 @@ SCANNET_COLOR_MAP_200 = {
     115: (184.0, 162.0, 91.0),
     116: (50.0, 138.0, 38.0),
     118: (31.0, 237.0, 236.0),
-    120: (0, 0, 0),
-    121: (0, 0, 0),
-    122: (0, 0, 0),
-    125: (0, 0, 0),
-    128: (0, 0, 0),
-    126: (0, 0, 0),
-    123: (0, 0, 0),
-    129: (0, 0, 0),
+    120: (39.0, 19.0, 208.0),
+    121: (223.0, 27.0, 180.0),
+    122: (254.0, 141.0, 85.0),
+    125: (97.0, 144.0, 39.0),
+    128: (106.0, 231.0, 176.0),
+    126: (12.0, 61.0, 162.0),
+    123: (124.0, 66.0, 140.0),
+    129: (137.0, 66.0, 73.0),
     12: (250.0, 253.0, 26.0),
     20: (55.0, 191.0, 73.0),
     25: (60.0, 126.0, 146.0),
@@ -145,7 +146,7 @@ SCANNET_COLOR_MAP_200 = {
     117: (49.0, 165.0, 42.0),
     119: (51.0, 128.0, 133.0),
     124: (44.0, 21.0, 163.0),
-    127: (0, 0, 0),
+    127: (232.0, 93.0, 193.0),
     85: (176.0, 102.0, 54.0),
     185: (116.0, 217.0, 17.0),
     188: (54.0, 209.0, 150.0),
@@ -170,7 +171,7 @@ SCANNET_COLOR_MAP_200 = {
     286: (184.0, 9.0, 49.0),
     300: (188.0, 174.0, 67.0),
     304: (53.0, 206.0, 53.0),
-    81: (97.0, 235.0, 252.0),
+    312: (97.0, 235.0, 252.0),
     323: (66.0, 32.0, 182.0),
     325: (236.0, 114.0, 195.0),
     331: (241.0, 154.0, 83.0),
@@ -219,15 +220,23 @@ SCANNET_COLOR_MAP_200 = {
     1188: (221.0, 124.0, 77.0),
     1189: (149.0, 214.0, 66.0),
     1190: (72.0, 185.0, 134.0),
-    -1: (42.0, 94.0, 198.0),
+    -1: (42.0, 94.0, 198.0)
 }
 
 def map2color(labels):
-    print('msdfsdfsdfsdf',labels)
     output_colors = list()
+    # Shuffle the values
+    keys = list(SCANNET_COLOR_MAP_200.keys())
+    values = list(SCANNET_COLOR_MAP_200.values())
+    #random.shuffle(values)   #uncomment to shuffle colors
 
+    # Create a new dictionary with shuffled values
+    shuffled_SCANNET_COLOR_MAP_200 = dict(zip(keys, values))
+    for i in [120,121,122,123,124,125,126,127,128,129]:
+         shuffled_SCANNET_COLOR_MAP_200[i] = (1, 1, 1)
+    
     for label in labels:
-        output_colors.append(SCANNET_COLOR_MAP_200[label])
+        output_colors.append(shuffled_SCANNET_COLOR_MAP_200[label])
 
     return torch.tensor(output_colors)
 @functools.lru_cache(20)
@@ -261,7 +270,6 @@ def run_vis(output, inverse_map, org_cords, org_colors, org_normals):
             * (pca_features - pca_features.min())
             / (pca_features.max() - pca_features.min())
         )
-        print(type(org_cords))
         eval_instance_step(
             output,
             None,
@@ -324,7 +332,6 @@ def eval_instance_step(
                     .detach()
                     .cpu()
                 )
-                print('TESTSTSTSTSTST',masks.shape[1])
 
                 if True:
                     new_preds = {
@@ -418,7 +425,6 @@ def eval_instance_step(
 
             sort_scores = scores.sort(descending=True)
             sort_scores_index = sort_scores.indices.cpu().numpy()
-            print(len(masks))
 
             sort_scores_values = sort_scores.values.cpu().numpy()
             sort_classes = classes[sort_scores_index]
@@ -506,7 +512,6 @@ def get_mask_and_scores(
 def get_full_res_mask(
          mask, inverse_map, point2segment_full, is_heatmap=False
     ):
-        print(inverse_map)
         mask = mask.detach().cpu()[inverse_map]  # full res
 
         return mask
@@ -589,7 +594,6 @@ def save_visualizations(
 
                 pred_coords.append(mask_coords)
                 pred_normals.append(mask_normals)
-                print(label.cpu().detach().numpy())
                 pred_sem_color.append(
                     map2color([int(label.cpu().detach().numpy())]).repeat(
                         mask_coords.shape[0], 1
@@ -607,28 +611,34 @@ def save_visualizations(
                 pred_normals = np.concatenate(pred_normals)
                 pred_sem_color = np.concatenate(pred_sem_color)
                 pred_inst_color = np.concatenate(pred_inst_color)
+                unique_values, counts = np.unique(pred_sem_color, axis=0, return_counts=True)
 
+                # Convert rows to tuples to use as dictionary keys
+                unique_counts_dict = {tuple(row): count for row, count in zip(unique_values, counts)}
+                print("Unique values and counts:")
+                pprint(unique_counts_dict)
                 v.add_points(
                     "Semantics (Mask3D)",
                     pred_coords,
                     colors=pred_sem_color,
-                    normals=pred_normals,
+                    normals=None,
                     visible=False,
                     alpha=0.8,
                     point_size=point_size,
                 )
+                print(np.unique(pred_sem_color, axis=0))
                 v.add_points(
                     "Instances (Mask3D)",
                     pred_coords,
                     colors=pred_inst_color,
-                    normals=pred_normals,
+                    normals=None,
                     visible=False,
                     alpha=0.8,
                     point_size=point_size,
                 )
 
         v.save(
-            f"/home/gokul/visualizations/{file_name}"
+            f"/home/gokul/visualizations2/{file_name}"
         )
 def load_model_and_data(cfg: DictConfig):
     """

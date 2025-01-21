@@ -1,6 +1,6 @@
 import numpy as np
-data =  np.load('/home/gokul/Mask3D/data/processed/scannet200/train/0a07bf65-9173-464c-8a76-eadc1652fe6b.npy')
-print(data[1,:])
+data =  np.load('/home/gokul/ConceptGraphs/concept-graphs/conceptgraph/Mask3D/data/processed/scannet200/validation/cf67ee02-2498-44a6-a534-fe6c970c6298.npy')
+print(np.unique(data[:,-2]))
 exit()
 import json 
 count = 0

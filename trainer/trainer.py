@@ -813,12 +813,12 @@ class InstanceSegmentation(pl.LightningModule):
                 all_pred_scores.append(sort_scores_values)
                 all_heatmaps.append(sorted_heatmap)
 
-        if self.validation_dataset.dataset_name == "scannet200":
-            all_pred_classes[bid][all_pred_classes[bid] == 0] = -1
-            if self.config.data.test_mode != "test":
-                target_full_res[bid]["labels"][
-                    target_full_res[bid]["labels"] == 0
-                ] = -1
+        # if self.validation_dataset.dataset_name == "scannet200":
+        #     all_pred_classes[bid][all_pred_classes[bid] == 0] = -1
+        #     if self.config.data.test_mode != "test":
+        #         target_full_res[bid]["labels"][
+        #             target_full_res[bid]["labels"] == 0
+        #         ] = -1
 
         for bid in range(len(prediction[self.decoder_id]["pred_masks"])):
             all_pred_classes[
