@@ -35,3 +35,22 @@ general.dbscan_eps=${CURR_DBSCAN} \
 general.export=true \
 data.test_mode=test \
 general.export_threshold=${CURR_T}
+
+# TEST CHINMAY
+python main_instance_segmentation.py \
+general.experiment_name="scannet200_benchmark_query_${CURR_QUERY}_topk_${CURR_TOPK}_dbscan_${CURR_DBSCAN}_export_${CURR_T}" \
+general.project_name="scannet200_eval" \
+general.checkpoint="saved/SIR_dummyClass/last-epoch.ckpt" \
+data/datasets=scannet200 \
+general.num_targets=11 \
+data.num_labels=11 \
+general.eval_on_segments=false \
+general.train_on_segments=false \
+general.train_mode=false \
+model.num_queries=${CURR_QUERY} \
+general.topk_per_image=${CURR_TOPK} \
+general.use_dbscan=true \
+general.dbscan_eps=${CURR_DBSCAN} \
+general.export=true \
+data.test_mode=test \
+general.export_threshold=${CURR_T}

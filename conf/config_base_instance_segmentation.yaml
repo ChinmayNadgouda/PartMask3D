@@ -18,7 +18,7 @@ general:
   project_name: scannet
   workspace: chinmay2759
   experiment_name: DEBUG_ABLATION
-  num_targets: 127
+  num_targets: 11
   add_instance: true
   dbscan_eps: 0.95
   dbscan_min_points: 1
