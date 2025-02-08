@@ -18,7 +18,7 @@ TestMode = 'test'
 import torch
 from models.mask3d import Mask3D
 from trainer.trainer import InstanceSegmentation
-from utils.utils import load_checkpoint_with_missing_or_exsessive_keys
+from conceptgraph.Mask3D.utils.utils import load_checkpoint_with_missing_or_exsessive_keys
 """
 'exclude2',
 'hook_turn',
@@ -35,14 +35,14 @@ from utils.utils import load_checkpoint_with_missing_or_exsessive_keys
 SCANNET_COLOR_MAP_200 = {
     0: (152.0, 223.0, 138.0),
     1: (255, 0, 0),
-    2: (255,255,255),
-    3: (0.0, 0.0, 0.0),
+    2: (255,255,153),
+    3: (1.0, 1.0, 1.0),
     4: (255.0, 255, 0),
-    5: (0, 204, 0),
+    5: (0,0,153),
     6: (0,128,255),
     7: (153, 51, 255),
     8: (204, 204, 255),
-    9: (152, 107, 48),
+    9: (1, 1, 1),
     10: (91.0, 229.0, 110.0),
 }
     #      0: (220, 20, 60),   # Crimson
@@ -515,7 +515,7 @@ def data_preparation(batch):
         [sample[3] for sample in batch],
     )
 
-def eval_step(batch, model, batch_idx=0):
+def eval_step(batch, model, file_name, batch_idx=0):
         data, target, file_names = batch
         inverse_maps = data.inverse_maps
         target_full = data.target_full
@@ -581,7 +581,7 @@ def eval_step(batch, model, batch_idx=0):
                 / (pca_features.max() - pca_features.min())
             )
         
-        eval_instance_step2(
+        masks, classes, scores = eval_instance_step2(
             output,
             target,
             target_full,
@@ -593,10 +593,11 @@ def eval_step(batch, model, batch_idx=0):
             raw_coordinates,
             data_idx,
             backbone_features=rescaled_pca,
+            file_name=file_name
         )
 
         
-        return 0.0 
+        return masks, classes, scores
 def remap_model_output(output):
         label_info = {0: {'color': [139.0, 18.0, 53.0], 'name': 'exclude2', 'validation': True}, 1: {'color': [134.0, 120.0, 54.0], 'name': 'hook_turn', 'validation': True}, 2: {'color': [49.0, 165.0, 42.0], 'name': 'exclude', 'validation': True}, 3: {'color': [51.0, 128.0, 133.0], 'name': 'hook_pull', 'validation': True}, 4: {'color': [44.0, 21.0, 163.0], 'name': 'key_press', 'validation': True}, 5: {'color': [232.0, 93.0, 193.0], 'name': 'rotate', 'validation': True}, 6: {'color': [176.0, 102.0, 54.0], 'name': 'foot_push', 'validation': True}, 7: {'color': [116.0, 217.0, 17.0], 'name': 'unplug', 'validation': True}, 8: {'color': [54.0, 209.0, 150.0], 'name': 'plug_in', 'validation': True}, 9: {'color': [60.0, 99.0, 204.0], 'name': 'pinch_pull', 'validation': True}, 10: {'color': [139.0, 18.0, 53.0], 'name': 'tip_push', 'validation': True}}
         output = np.array(output)
@@ -618,8 +619,8 @@ def save_visualizations2(
         query_pos=None,
         backbone_features=None,
     ):
-        print(sorted_masks)
-        print(len(sorted_masks[0]))
+        # print(sorted_masks)
+        # print(sorted_masks[0].shape)
         full_res_coords -= full_res_coords.mean(axis=0)
 
         gt_pcd_pos = []
@@ -742,36 +743,39 @@ def save_visualizations2(
             )
 
             for i in reversed(range(sorted_masks[did].shape[1])):
-                coords = full_res_coords[
-                    sorted_masks[did][:, i].astype(bool), :
-                ]
+                if sort_scores_values[did][i] > 0:
+                    label = sort_classes[did][i]
+                    if(label == 2):
+                        continue
+                    coords = full_res_coords[
+                        sorted_masks[did][:, i].astype(bool), :
+                    ]
 
-                mask_coords = full_res_coords[
-                    sorted_masks[did][:, i].astype(bool), :
-                ]
-                mask_normals = original_normals[
-                    sorted_masks[did][:, i].astype(bool), :
-                ]
+                    mask_coords = full_res_coords[
+                        sorted_masks[did][:, i].astype(bool), :
+                    ]
+                    mask_normals = original_normals[
+                        sorted_masks[did][:, i].astype(bool), :
+                    ]
 
-                label = sort_classes[did][i]
+                    if len(mask_coords) == 0:
+                        continue
 
-                if len(mask_coords) == 0:
-                    continue
+                    pred_coords.append(mask_coords)
+                    pred_normals.append(mask_normals)
 
-                pred_coords.append(mask_coords)
-                pred_normals.append(mask_normals)
-
-                pred_sem_color.append(
-                    map2color([label]).repeat(
-                        mask_coords.shape[0], 1
+                    pred_sem_color.append(
+                        map2color([label]).repeat(
+                            mask_coords.shape[0], 1
+                        )
                     )
-                )
 
-                pred_inst_color.append(
-                    instances_colors[i % len(instances_colors)]
-                    .unsqueeze(0)
-                    .repeat(mask_coords.shape[0], 1)
-                )
+                    pred_inst_color.append(
+                        instances_colors[i % len(instances_colors)]
+                        .unsqueeze(0)
+                        .repeat(mask_coords.shape[0], 1)
+                    )
+
 
             if len(pred_coords) > 0:
                 pred_coords = np.concatenate(pred_coords)
@@ -820,6 +824,7 @@ def eval_instance_step2(
         idx,
         first_full_res=False,
         backbone_features=None,
+        file_name = None
     ):
         label_offset = 0
         prediction = output["aux_outputs"]
@@ -992,7 +997,7 @@ def eval_instance_step2(
                 full_res_coords[bid],
                 [preds[file_names[bid]]["pred_masks"]],
                 [preds[file_names[bid]]["pred_classes"]],
-                file_names[bid],
+                file_name,
                 original_colors[bid],
                 original_normals[bid],
                 [preds[file_names[bid]]["pred_scores"]],
@@ -1003,6 +1008,8 @@ def eval_instance_step2(
                 backbone_features=backbone_features,
                 point_size=20,
             )
+
+            return preds[file_names[bid]]["pred_masks"], preds[file_names[bid]]["pred_classes"], preds[file_names[bid]]["pred_scores"]
 
             # if self.config.general.export:
             #     if self.validation_dataset.dataset_name == "stpls3d":
@@ -1029,7 +1036,7 @@ def eval_instance_step2(
             #         )
 
 # @hydra.main(config_path="conf", config_name="config_base_instance_segmentation.yaml")
-def main(cfg: DictConfig, cordinates_to_eval, colors_to_eval, normals_to_eval):
+def main(cfg: DictConfig, cordinates_to_eval, colors_to_eval, normals_to_eval, file_name):
     """
     Main function for loading model and data using the configuration loaded from YAML.
 
@@ -1038,21 +1045,36 @@ def main(cfg: DictConfig, cordinates_to_eval, colors_to_eval, normals_to_eval):
     """
     # Load model and trainer
     model, trainer = load_model_and_data(cfg)
-    checkpoint_path = "saved/SIR_dummyClass/last-epoch.ckpt"
+    checkpoint_path = "/home/gokul/ConceptGraphs/concept-graphs/conceptgraph/Mask3D/saved/SIR_dummyClass/last-epoch.ckpt"
     checkpoint = torch.load(checkpoint_path, map_location=torch.device('cpu'))
 
     # Load the model state
     model.load_state_dict(checkpoint['state_dict'])  # Adjust the key if needed
     model = model.to('cuda:0')
- 
+    model.eval()
     labels = np.zeros((cordinates_to_eval.shape[0],3))
     colors = np.repeat([[-1.8586, -1.6315, -1.4888]], cordinates_to_eval.shape[0], axis=0)
     batch = [(cordinates_to_eval,np.concatenate((colors, normals_to_eval),axis=1), labels,'test', colors,normals_to_eval,cordinates_to_eval,1 )]
     with torch.no_grad():
         dataaaa = data_preparation(batch)
         model2 = hydra.utils.instantiate(cfg.model)
-        eval_step(dataaaa, model)
-    exit()
+        masks, classes, scores = eval_step(dataaaa, model, 'test'+str(file_name))
+        to_return = {}
+        for i in reversed(range(masks.shape[1])):
+            to_return[classes[i]] = {}
+            to_return[classes[i]]['masks'] = [] 
+            to_return[classes[i]]['scores'] = []
+        keys_to_return = set()
+        for i in reversed(range(masks.shape[1])):
+                keys_to_return.add(classes[i])
+                to_return[classes[i]]['masks'].append(masks[:,i])
+                to_return[classes[i]]['scores'].append(scores[i])
+        return_final = {}
+        for key, values in to_return.items():
+            if key in keys_to_return:
+                return_final[key] = values
+
+    return return_final
     voxelization_dict = {
         "ignore_label": 255,
         # "quantization_size": self.voxel_size,
